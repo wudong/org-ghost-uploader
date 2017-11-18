@@ -1,0 +1,76 @@
+#+BLOG: graceliu
+#+POSTID: 124
+#+ORG2BLOG:
+#+DATE: [2017-08-10 Thu 10:47]
+#+OPTIONS: toc:nil num:nil todo:nil pri:nil tags:nil ^:nil
+#+CATEGORY: 编程
+#+TAGS: algorithms
+#+DESCRIPTION:
+#+TITLE: Backtracking with some additional
+
+- Backtracking incrementally builds candidates to the solutions, and
+  abandon each partial candidate as soon as it cannot possibly be
+  completed to a valid solution.
+- Backtracking can be applied only for problems which admit the
+  concept of a *partial candidate solution* and a relatively quick
+  test of whether it can possibly be completed to a valid solution.
+- When it applicable, it often much faster than brute force
+  enumeration of all complete candidates, since it eliminate a large
+  number of candidates with a single test.
+
+** Description of the method
+- Conceptually, the partial candidates are represented as the *nodes* of
+  a *tree* structure, /the potential search tree/.
+- Each partial candidate is the parent of the candidates that /differ
+  from it by a *single extension step*/;
+- The *leaves* of the tree are the partial candidates that cannot be
+  extended any further, i.e, a possible solution.
+- The backtracking algorithm traverses this search tree recursively,
+  from the root down, in *depth-first* order.
+
+** The algorithm:
+- [[https://www.cis.upenn.edu/~matuszek/cit594-2012/Pages/backtracking.html][The tutorial]]
+- Recursive code:
+  #+BEGIN_SRC java
+  boolean solve(Node n) {
+    if (is_leaf(n)) {
+      if (is_goal(n)) {
+        return true;
+      }
+      else return false;
+    } else {
+      for (c : child(n)) {
+          if ( solve(c) ) return true;
+      }
+      return false;
+    }
+  }
+  #+END_SRC
+  The reasoning:
+  - If any of the children of n is solvable, n is solvable
+  - If non of the children of n is solvable, n is non-solvable
+- Non-Recursive code:
+  #+BEGIN_SRC java
+    boolean solve(Node n) {
+      stack.push(n);
+      while (!stack.isEmpty()) {
+        Node node= stack.peek();
+        if (is_leaf(node)){
+            if (is_goal(node)){
+                return true;
+            }else{
+                stack.pop();
+            }
+        } else {
+            if (node.hasMoreChildToTry()){
+                Node childNode = node.nextChild();
+                stack.push(childNode);
+            }else{
+                stack.pop();
+            }
+        };
+        return false;
+    }
+  #+END_SRC
+  When the stack algorithm terminates successfully, the nodes on the
+  stack form (in reverse order) a path from the root to a goal node.

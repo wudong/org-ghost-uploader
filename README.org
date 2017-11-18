@@ -1,0 +1,9 @@
+* Orgmode file to ghost uploader
+
+Orgmode is my main editor for making note and I wish there is some easy way to upload an org file to the Ghost platform.
+
+This project provides basic function to streamline the process of uploading orgmode file to Ghost.
+
+It served mainly as practice for the Kotlin language but hopefully it can also be of some use for others.
+
+** Setting up in Emacs
