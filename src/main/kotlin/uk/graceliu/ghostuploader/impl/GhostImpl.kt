@@ -31,7 +31,7 @@ class GhostImpl constructor(val baseUrl: String,
     val client_secret = "aea9e85b0089"
     val grant_type = "password"
     val username = "wudong.liu@gmail.com"
-    val password = "Yuepan2008"
+    val password = "yuepan2008"
 
     //token will be filled when login
     var token : GhostToken? = null
@@ -109,8 +109,13 @@ class GhostImpl constructor(val baseUrl: String,
 
             posts.posts = listOf(post.toGhostPost())
 
-            postOrPut(postUrl){ url ->  REQUEST_FACTORY.buildPostRequest(url, JsonHttpContent(JSON_FACTORY,
-                    posts))}
+            val createdPost = postOrPut(postUrl) { url ->
+                REQUEST_FACTORY.buildPostRequest(url, JsonHttpContent(JSON_FACTORY,
+                        posts))
+            }
+            //update the filename.
+            createdPost.meta.fileName = post.meta.fileName
+            createdPost
         }
     }
 
@@ -145,7 +150,7 @@ class GhostImpl constructor(val baseUrl: String,
     private fun Post.toGhostPost(): GhostPost {
         val gp = GhostPost()
 
-        gp.slug = this.meta.slug!!
+        gp.slug = this.meta.slug
         gp.title=this.meta.title
         gp.id = this.meta.id
         gp.mobiledoc =  JSON_FACTORY.toString(MobileDoc.generateMobileDoc(this.content))

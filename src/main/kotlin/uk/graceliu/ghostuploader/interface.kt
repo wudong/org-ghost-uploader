@@ -1,5 +1,6 @@
 package uk.graceliu.ghostuploader
 
+import java.io.File
 import java.io.Reader
 import java.io.StringReader
 import java.nio.file.Path
@@ -21,8 +22,9 @@ interface PostProvider {
 interface MetaDataParser {
     fun parse(contentString: String): PostMetaData? = parse(StringReader(contentString))
     fun parse(contentReader: Reader): PostMetaData?
+    fun update(meta: PostMetaData, file: Path)
 }
 
 interface Uploader {
-    fun upload(file: Post) : Post
+    fun upload(file: Path) : Post?
 }

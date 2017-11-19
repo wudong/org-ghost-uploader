@@ -23,13 +23,13 @@ class OrgMetadataParserImplTest {
             SOME OTHER CONTENT CONTINUE
             """.trimIndent()
 
-        val parser = OrgMetadataParserImpl.getInstance("someOrgFile.org")
+        val parser = OrgMetadataParserImpl()
         val data = parser.parse(content)!!
 
         assertThat(data.id, equalTo("124"))
         assertThat(data.title, equalTo("Backtracking topic"))
         assertThat(data.category, equalTo("Programming"))
         assertThat(data.tags, equalTo(listOf("algorithms", "theory")))
-        assertThat(data.fileName, equalTo("someOrgFile.org"))
+        //assertThat(data.fileName, equalTo("someOrgFile.org"))
     }
 }

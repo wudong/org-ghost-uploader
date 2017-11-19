@@ -36,7 +36,7 @@ class GhostPost : GenericJson() {
     @com.google.api.client.util.Key
     var plaintext: String = ""
     @com.google.api.client.util.Key
-    var slug: String = ""
+    var slug: String? = null
     @com.google.api.client.util.Key
     var status: String = "draft"
     @com.google.api.client.util.Key

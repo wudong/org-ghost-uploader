@@ -4,9 +4,11 @@ import org.junit.Assert.*
 import org.junit.Test
 import java.io.File
 import org.hamcrest.Matchers.*
+import uk.graceliu.ghostuploader.MetaDataParser
 import java.nio.file.Paths
 
 class LocalOrgMDFileImplTest {
+    val parser: MetaDataParser = OrgMetadataParserImpl()
 
     @Test
     fun `convert orgfile name to md file name correctoy`() {
@@ -16,14 +18,14 @@ class LocalOrgMDFileImplTest {
 
     @Test
     fun `file stream works properly`(){
-        LocalOrgMDFileImpl().
+        LocalOrgMDFileImpl(parser).
                 fileStream(File("."), ".kt" )
                 .forEach(System.out::println)
     }
 
     @Test
     fun `metadata stream works properly`(){
-        val count = LocalOrgMDFileImpl()
+        val count = LocalOrgMDFileImpl(parser)
                 .metaDataStream(Paths.get(".", "testdata"))
                 .peek(System.out::println)
                 .count()
@@ -32,7 +34,7 @@ class LocalOrgMDFileImplTest {
 
     @Test
     fun `post stream should filter out the org files that without a md file`(){
-        val count = LocalOrgMDFileImpl()
+        val count = LocalOrgMDFileImpl(parser)
                 .postStream(Paths.get(".", "testdata"))
                 .peek(System.out::println)
                 .count()
@@ -45,7 +47,7 @@ class LocalOrgMDFileImplTest {
         val content = """
             -   Backtracking incrementally builds candidates to the solutions, and
             """.trimIndent()
-        val post = LocalOrgMDFileImpl()
+        val post = LocalOrgMDFileImpl(parser)
                 .postStream(Paths.get(".", "testdata"))
               //  .peek(System.out::println)
                 .findFirst().get()
@@ -59,7 +61,7 @@ class LocalOrgMDFileImplTest {
             -   Backtracking incrementally builds candidates to the solutions, and
             """.trimIndent()
 
-        val post = LocalOrgMDFileImpl()
+        val post = LocalOrgMDFileImpl(parser)
                 .post(Paths.get(".", "testdata", "backtracking.org"))
         assertThat(post!!.meta.title, equalTo("Backtracking"))
         assertThat(post!!.content, startsWith(content))
