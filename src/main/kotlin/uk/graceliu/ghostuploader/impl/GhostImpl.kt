@@ -22,6 +22,8 @@ class GhostImpl constructor(val baseUrl: String,
                             val clientSecret: String
                             ) : GhostInterface {
 
+    //private val logger = KotlinLogging.logger {}
+
     val loginUrl = "http://docker.graceliu.uk:32819/ghost/api/v0.1/authentication/token"
     val postUrl = "http://docker.graceliu.uk:32819/ghost/api/v0.1/posts/"
     val postSlugUrl = "http://docker.graceliu.uk:32819/ghost/api/v0.1/slugs/post"
@@ -58,7 +60,6 @@ class GhostImpl constructor(val baseUrl: String,
         val response = request.execute()
         return response.parseAs(GhostToken::class.java)
     }
-
 
     fun <T> checkLogin(token: GhostToken?, block: ()->T): T {
         return if (token!==null){
@@ -113,9 +114,8 @@ class GhostImpl constructor(val baseUrl: String,
                 REQUEST_FACTORY.buildPostRequest(url, JsonHttpContent(JSON_FACTORY,
                         posts))
             }
-            //update the filename.
-            createdPost.meta.fileName = post.meta.fileName
-            createdPost
+
+            updateFileName(createdPost, post)
         }
     }
 
@@ -125,8 +125,11 @@ class GhostImpl constructor(val baseUrl: String,
             val posts = GhostPosts()
             posts.posts = listOf(post.toGhostPost())
 
-            postOrPut("${this.postUrl}${post.meta.id}/") { url ->  REQUEST_FACTORY.buildPutRequest(url, JsonHttpContent(JSON_FACTORY,
-                    posts))}
+            val updatedPost = postOrPut("${this.postUrl}${post.meta.id}/") { url ->
+                REQUEST_FACTORY.buildPutRequest(url, JsonHttpContent(JSON_FACTORY,
+                        posts))
+            }
+            updateFileName(updatedPost, post)
         }
     }
 
@@ -135,6 +138,11 @@ class GhostImpl constructor(val baseUrl: String,
             val response = REQUEST_FACTORY.buildDeleteRequest(GenericUrl(postUrl)).execute()
             response.parseAsString()=="OK"
         }
+    }
+
+    private fun updateFileName(updatePost: Post, originalPost: Post): Post{
+        updatePost.meta.fileName = originalPost.meta.fileName
+        return updatePost
     }
 
     private fun postOrPut(postUrl: String, requestProvider: (url: GenericUrl)->HttpRequest): Post {

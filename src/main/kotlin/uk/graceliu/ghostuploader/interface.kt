@@ -26,5 +26,5 @@ interface MetaDataParser {
 }
 
 interface Uploader {
-    fun upload(file: Path) : Post?
+    fun upload(file: Path) : Boolean
 }

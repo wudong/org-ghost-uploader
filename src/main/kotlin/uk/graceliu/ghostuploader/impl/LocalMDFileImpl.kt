@@ -23,8 +23,12 @@ fun getMDFileFromOrgFile(orgFile: File) : File {
 
 class LocalOrgMDFileImpl constructor(val parser: MetaDataParser ): PostProvider {
 
-    private fun File.convertFileToMeta(): PostMetaData? =
-        parser.parse(FileReader(this))?.copy(fileName = this.absolutePath)
+    private fun File.convertFileToMeta(): PostMetaData? {
+        val parse = parser.parse(FileReader(this))
+        parse?.fileName= this.absolutePath
+        return parse
+    }
+
 
     fun PostMetaData.retrieveContent(): String? {
         val mdFileFromOrgFile = getMDFileFromOrgFile(File(this.fileName))
@@ -91,24 +95,32 @@ class OrgMetadataParserImpl : MetaDataParser {
         val tempPath = Files.createTempFile("ghostuploader", "org")
         val bufferedWriter = PrintWriter(FileWriter(tempPath.toFile()))
 
-        //writing the header.
-        meta.toMap().forEach {
-            entry -> bufferedWriter.println(
-                "$ORGMODE_META_PREFIX${entry.key}$ORGMODE_META_SEPARATOR ${entry.value}"
-            )
-        }
+        //Need to preserve the existed meta as map.
+        val originalHeaderMap = parseHeader(FileReader(fileName.toFile())).toMutableMap()
 
-        BufferedReader(FileReader(meta.fileName)).useLines {
-            val iterator = it.iterator()
-            var skipped = false;
-            while (iterator.hasNext()) {
-                val line = iterator.next()
-                if (!skipped && (line.isEmpty() || line.startsWith(ORGMODE_META_PREFIX))) {
-                    //skip the original header.
-                    continue
-                }else{
-                    skipped = true
-                    bufferedWriter.println(line)
+        bufferedWriter.use {
+            //writing the header.
+            val metaMap = meta.toMap()
+            originalHeaderMap.putAll(metaMap)
+            originalHeaderMap.forEach { entry ->
+                bufferedWriter.println(
+                        "$ORGMODE_META_PREFIX${entry.key}$ORGMODE_META_SEPARATOR ${entry.value}"
+                )
+            }
+            bufferedWriter.println()
+
+            BufferedReader(FileReader(meta.fileName)).useLines {
+                val iterator = it.iterator()
+                var skipped = false;
+                while (iterator.hasNext()) {
+                    val line = iterator.next()
+                    if (!skipped && (line.isEmpty() || line.startsWith(ORGMODE_META_PREFIX))) {
+                        //skip the original header.
+                        continue
+                    } else {
+                        skipped = true
+                        bufferedWriter.println(line)
+                    }
                 }
             }
         }
@@ -184,13 +196,16 @@ class OrgMetadataParserImpl : MetaDataParser {
             ) else null
     }
 
-    private fun PostMetaData.toMap(): Map<String, String?> {
-        return mapOf( ORGMODE_POSTID_KEY to this.id,
-                ORGMODE_SLUG_KEY to this.slug,
-                ORGMODE_TITLE_KEY to this.title,
-                ORGMODE_CATEGORY_KEY to this.category,
-                ORGMODE_TAGS_KEY to this.tags.joinToString()
-        )
+    private fun PostMetaData.toMap(): Map<String, String> {
+        val mutableMapOf = mutableMapOf<String, String>()
+
+        this.id?.let { mutableMapOf.put(ORGMODE_POSTID_KEY, it) }
+        this.slug?.let { mutableMapOf.put(ORGMODE_SLUG_KEY, it) }
+        this.title?.let { mutableMapOf.put(ORGMODE_TITLE_KEY, it) }
+        this.category?.let { mutableMapOf.put(ORGMODE_CATEGORY_KEY, it) }
+        this.tags.let { mutableMapOf.put(ORGMODE_TAGS_KEY, it.joinToString()) }
+
+        return mutableMapOf
     }
 
 }

@@ -24,6 +24,8 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
     compile "com.google.http-client:google-http-client-jackson:1.23.0"
+    compile 'io.github.microutils:kotlin-logging:1.4.6'
+    compile 'ch.qos.logback:logback-classic:1.2.3'
 
     testCompile "junit:junit:4.12"
     testCompile "org.hamcrest:hamcrest-all:1.3"

@@ -1,11 +1,11 @@
 #+BLOG: graceliu
-#+ORG2BLOG:
-#+DATE: [2017-08-10 Thu 10:47]
-#+OPTIONS: toc:nil num:nil todo:nil pri:nil tags:nil ^:nil
+#+ORG2BLOG: 
 #+CATEGORY: 编程
-#+TAGS: algorithms
-#+DESCRIPTION:
-#+TITLE: Backtracking
+#+TAGS: 
+#+DESCRIPTION: 
+#+TITLE: Backtracking with some additional
+#+POSTID: 5a134ef2f1deb500013c8b1d
+#+SLUG: backtracking-with-some-additional-5
 
 - Backtracking incrementally builds candidates to the solutions, and
   abandon each partial candidate as soon as it cannot possibly be
