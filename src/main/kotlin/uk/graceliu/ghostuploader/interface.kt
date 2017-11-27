@@ -6,6 +6,15 @@ import java.io.StringReader
 import java.nio.file.Path
 import java.util.stream.Stream
 
+interface GhostConfig {
+    val baseUrl: String
+    val userName: String
+    val password: String
+    val clientId: String
+    val clientSecret: String
+    val grantType: String
+}
+
 interface GhostInterface {
     fun login(user: String, password: String)
     fun getPosts(): Iterable<Post>

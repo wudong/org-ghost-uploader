@@ -12,28 +12,25 @@ import com.google.api.client.http.json.JsonHttpContent
 import com.google.api.client.json.JsonFactory
 import com.google.api.client.json.JsonObjectParser
 import com.google.api.client.json.jackson.JacksonFactory
+import uk.graceliu.ghostuploader.GhostConfig
 import uk.graceliu.ghostuploader.Post
 import uk.graceliu.ghostuploader.PostMetaData
 import java.net.URLEncoder
 
 
-class GhostImpl constructor(val baseUrl: String,
-                            val clientId: String = "ghost-admin",
-                            val clientSecret: String
-                            ) : GhostInterface {
+class GhostImpl constructor(ghostConfig: GhostConfig) : GhostInterface {
 
     //private val logger = KotlinLogging.logger {}
 
-    val loginUrl = "http://docker.graceliu.uk:32819/ghost/api/v0.1/authentication/token"
-    val postUrl = "http://docker.graceliu.uk:32819/ghost/api/v0.1/posts/"
-    val postSlugUrl = "http://docker.graceliu.uk:32819/ghost/api/v0.1/slugs/post"
+    val loginUrl = "${ghostConfig.baseUrl}/authentication/token"
+    val postUrl = "${ghostConfig.baseUrl}/posts/"
+    val postSlugUrl = "${ghostConfig.baseUrl}/slugs/post"
 
-
-    val client_id= "ghost-admin"
-    val client_secret = "aea9e85b0089"
-    val grant_type = "password"
-    val username = "wudong.liu@gmail.com"
-    val password = "yuepan2008"
+    val client_id= ghostConfig.clientId
+    val client_secret = ghostConfig.clientSecret
+    val grant_type = ghostConfig.grantType
+    val username = ghostConfig.userName
+    val password = ghostConfig.password
 
     //token will be filled when login
     var token : GhostToken? = null

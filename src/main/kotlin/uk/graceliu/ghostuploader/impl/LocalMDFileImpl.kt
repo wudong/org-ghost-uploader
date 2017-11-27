@@ -1,6 +1,5 @@
 package uk.graceliu.ghostuploader.impl
 
-import sun.jvm.hotspot.oops.Metadata
 import uk.graceliu.ghostuploader.Post
 import uk.graceliu.ghostuploader.PostProvider
 import uk.graceliu.ghostuploader.MetaDataParser
@@ -66,8 +65,8 @@ class LocalOrgMDFileImpl constructor(val parser: MetaDataParser ): PostProvider 
     }
 
     override fun post(path: Path): Post? {
-        assert(path.toFile().isFile , {"The basepath provided for post must be a file"})
-        assert(path.toFile().extension.toLowerCase() == "org" , {"The basepath provided for post must be an org file"})
+        assert(path.toFile().isFile , {"The path provided for post must be a file: ${path}"})
+        assert(path.toFile().extension.toLowerCase() == "org" , {"The path provided for post must be an org file"})
 
         val m = path.toFile().convertFileToMeta()
         return if (m!==null){

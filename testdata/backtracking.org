@@ -3,9 +3,7 @@
 #+CATEGORY: 编程
 #+TAGS: 
 #+DESCRIPTION: 
-#+TITLE: Backtracking with some additional
-#+POSTID: 5a134ef2f1deb500013c8b1d
-#+SLUG: backtracking-with-some-additional-5
+#+TITLE: Backtracking
 
 - Backtracking incrementally builds candidates to the solutions, and
   abandon each partial candidate as soon as it cannot possibly be

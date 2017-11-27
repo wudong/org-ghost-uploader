@@ -49,7 +49,6 @@ class LocalOrgMDFileImplTest {
             """.trimIndent()
         val post = LocalOrgMDFileImpl(parser)
                 .postStream(Paths.get(".", "testdata"))
-              //  .peek(System.out::println)
                 .findFirst().get()
         assertThat(post.meta.title, equalTo("Backtracking"))
         assertThat(post.content, startsWith(content))
