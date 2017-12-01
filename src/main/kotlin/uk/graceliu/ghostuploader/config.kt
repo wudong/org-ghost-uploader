@@ -1,6 +1,11 @@
 package uk.graceliu.ghostuploader
 
 import com.typesafe.config.ConfigFactory
+import com.typesafe.config.ConfigParseOptions
+import com.typesafe.config.ConfigSyntax
+import mu.KotlinLogging
+import java.nio.file.Files
+import java.nio.file.Paths
 
 
 enum class ConfigEnum{
@@ -15,8 +20,24 @@ data class Configuration(override val baseUrl: String,
                          override val grantType: String
 ) : GhostConfig{
     companion object {
+        private val logger = KotlinLogging.logger {}
+
         fun getConfiguration(args: Array<String>): Configuration {
-            val config= ConfigFactory.load()
+
+            val userConfigFile = Paths.get(System.getenv("HOME"), ".ghostuploader")
+
+            val userConfig = if (Files.exists(userConfigFile)) {
+                val parseOption = ConfigParseOptions.defaults().setSyntax(ConfigSyntax.PROPERTIES)
+                logger.debug { "Loading config file from home directory" }
+                ConfigFactory.parseFile(userConfigFile.toFile(), parseOption)
+            }else {
+                logger.debug { "Loading config file from default application default" }
+                ConfigFactory.defaultApplication()
+            }
+
+            val config = ConfigFactory.load(userConfig)
+
+            logger.debug { "Config loaded: $config" }
 
             return Configuration(
                     baseUrl = config.getString(ConfigEnum.baseUrl.name),

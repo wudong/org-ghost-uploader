@@ -148,6 +148,8 @@ class GhostImpl constructor(ghostConfig: GhostConfig) : GhostInterface {
         val request = requestProvider(url)
         request.headers.authorization = token!!.toBearAuthorizationString()
         val response = request.execute()
+
+        //TODO obviously the parse can fail and the ghostPost will be null
         val ghostPost = response.parseAs(GhostPosts::class.java)
         return ghostPost.posts[0].toPost()
     }
